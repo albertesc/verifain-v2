@@ -1,0 +1,27 @@
+const express = require('express')
+const employeesRouter = require('./controllers/employees')
+const app = express()
+const loginRouter = require('./controllers/login')
+const signingsRouter = require('./controllers/signings')
+const accountsRouter = require('./controllers/accounts')
+const actionsRouter = require('./controllers/actions')
+const clientsRouter = require('./controllers/clients')
+const locationsRouter = require('./controllers/locations')
+const labelsRouter = require('./controllers/labels')
+const { resolveTenant, resolveAdmin } = require('./middleware/connectionResolver')
+const handleErrors = require('./middleware/handleErrors')
+const notFound = require('./middleware/notFound')
+
+app.use('/api/login', resolveAdmin, loginRouter)
+app.use('/api/accounts', resolveAdmin, accountsRouter)
+app.use('/api/signings', resolveTenant, signingsRouter)
+app.use('/api/employees', resolveTenant, employeesRouter)
+app.use('/api/actions', resolveTenant, actionsRouter)
+app.use('/api/clients', resolveTenant, clientsRouter)
+app.use('/api/locations', resolveTenant, locationsRouter)
+app.use('/api/labels', resolveTenant, labelsRouter)
+
+app.use(handleErrors)
+app.use(notFound)
+
+module.exports = app

@@ -1,0 +1,31 @@
+{
+  "name": "verifain-v2",
+  "version": "1.0.0",
+  "description": "",
+  "workspaces": [
+    "backend",
+    "platform"
+  ],
+  "engines": {
+    "npm": "8.12.1"
+  },
+  "main": "index.js",
+  "scripts": {
+    "build": "SKIP_PREFLIGHT_CHECK=true npm run build --workspace=platform",
+    "start": "npm run start --workspace=backend",
+    "dev:api": "npm run build && npm run dev --workspace=backend",
+    "dev:platform": "npm run dev --workspace=platform",
+    "lint": "eslint ./backend ./platform",
+    "lint:fix": "eslint ./backend ./platform --fix"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "standard": "^17.0.0"
+  },
+  "eslintConfig": {
+    "ignorePatterns": "dist",
+    "extends": "./node_modules/standard/eslintrc.json"
+  }
+}
