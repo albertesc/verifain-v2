@@ -2,21 +2,35 @@ const locationsRouter = require('express').Router()
 const authorization = require('../middleware/authorization')
 const getLocationModel = require('../services/getLocationModel')
 const getClientModel = require('../services/getClientModel')
+const getActionModel = require('../services/getActionModel')
+const getSigningModel = require('../services/getSigningModel')
 const { getConnection } = require('../middleware/connectionResolver')
 
 locationsRouter.get('/', async (_, res) => {
   const dbConnection = await getConnection()
   const Location = await getLocationModel(dbConnection)
+  await getClientModel(dbConnection)
+  await getActionModel(dbConnection)
+  await getSigningModel(dbConnection)
 
   Location.find({})
+    .populate('client', 'name')
+    .populate('signings', 'signingIn signingOut')
+    .populate('actions', 'startDate endDate hour duration')
     .then(locations => res.status(200).json(locations))
 })
 
 locationsRouter.get('/:id', async (req, res, next) => {
   const dbConnection = await getConnection()
   const Location = await getLocationModel(dbConnection)
+  await getClientModel(dbConnection)
+  await getActionModel(dbConnection)
+  await getSigningModel(dbConnection)
 
   Location.findById(req.params.id)
+    .populate('client', 'name')
+    .populate('signings', 'signingIn signingOut')
+    .populate('actions', 'startDate endDate hour duration')
     .then(location => {
       location
         ? res.status(200).json(location)

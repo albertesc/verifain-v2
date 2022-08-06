@@ -9,16 +9,28 @@ const { getConnection } = require('../middleware/connectionResolver')
 signingsRouter.get('/', async (_, res) => {
   const dbConnection = await getConnection()
   const Signing = await getSigningModel(dbConnection)
+  await getEmployeeModel(dbConnection)
+  await getActionModel(dbConnection)
+  await getLocationModel(dbConnection)
 
   Signing.find({})
+    .populate('employee', 'name surname')
+    .populate('action', 'startDate endDate hour duration')
+    .populate('location', 'name')
     .then(signings => res.status(200).json(signings))
 })
 
 signingsRouter.get('/:id', async (req, res, next) => {
   const dbConnection = await getConnection()
   const Signing = await getSigningModel(dbConnection)
+  await getEmployeeModel(dbConnection)
+  await getActionModel(dbConnection)
+  await getLocationModel(dbConnection)
 
   Signing.findById(req.params.id)
+    .populate('employee', 'name surname')
+    .populate('action', 'startDate endDate hour duration')
+    .populate('location', 'name')
     .then(signing => {
       signing
         ? res.status(200).json(signing)
@@ -44,23 +56,23 @@ signingsRouter.post('/', authorization, async (req, res, next) => {
     signingInType,
     signingIn,
     coordinatesIn,
-    action: action._id,
-    employee: employee._id,
-    location: location._id
+    action: actionId,
+    employee: employeeId,
+    location: locationId
   }).save()
     .then(savedSigning => {
-      employee.signings = employee.signings.concat(savedSigning._id)
-      employee.save()
-
-      if (action) {
-        action.signings = action.signings.concat(savedSigning._id)
-        action.save()
-      }
-
-      if (location) {
-        location.signings = location.signings.concat(savedSigning._id)
-        location.save()
-      }
+      employee && employee.signings.push(savedSigning._id) && employee.save()
+      action
+        ? (action.signings.push(savedSigning._id) && action.save())
+        : new Action({
+          startDate: new Date(),
+          endDate: new Date(),
+          employees: [employeeId],
+          location: locationId,
+          signings: [savedSigning._id],
+          notProgrammed: true
+        }).save()
+      location && location.signings.push(savedSigning._id) && location.save()
 
       res.status(201).json(savedSigning)
     })

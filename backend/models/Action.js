@@ -62,6 +62,10 @@ const actionSchema = new Schema({
     enum: validRecurranceDays,
     default: null
   }],
+  notProgrammed: {
+    type: Boolean,
+    default: false
+  },
   employees: [{
     type: Schema.Types.ObjectId,
     ref: 'Employee'

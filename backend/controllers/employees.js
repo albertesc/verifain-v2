@@ -1,21 +1,26 @@
 const employeesRouter = require('express').Router()
 const authorization = require('../middleware/authorization')
 const getEmployeeModel = require('../services/getEmployeeModel')
+const getSigningModel = require('../services/getSigningModel')
 const { getConnection } = require('../middleware/connectionResolver')
 
 employeesRouter.get('/', authorization, async (_, res) => {
   const dbConnection = await getConnection()
   const Employee = await getEmployeeModel(dbConnection)
+  await getSigningModel(dbConnection)
 
   Employee.find({})
-    .then(signings => res.status(200).json(signings))
+    .populate('signings', 'signingIn signingOut location')
+    .then(employees => res.status(200).json(employees))
 })
 
 employeesRouter.get('/:id', async (req, res, next) => {
   const dbConnection = await getConnection()
   const Employee = await getEmployeeModel(dbConnection)
+  await getSigningModel(dbConnection)
 
   Employee.findById(req.params.id)
+    .populate('signings', 'signingIn signingOut location')
     .then(signing => {
       signing
         ? res.status(200).json(signing)
