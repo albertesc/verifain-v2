@@ -1,16 +1,14 @@
 import { FilterMatchMode, FilterOperator } from 'primereact/api'
 import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Layout from '../../components/Layout'
 import RowEdit from '../../components/RowEdit'
-import employeesService from '../../services/employees'
-import getLocalAccount from '../../services/getLocalAccount'
+import useEmployees from '../../hooks/useEmployees'
 
 export default function Employees () {
-  const [loading, setLoading] = useState(false)
-  const [employees, setEmployees] = useState([])
-  const { accountRef, token } = getLocalAccount()
+  const [employees, loading] = useEmployees()
+
   const [globalFilterValue, setGlobalFilterValue] = useState('')
   const [filters, setFilters] = useState({
     global: {
@@ -33,16 +31,6 @@ export default function Employees () {
     }
   })
 
-  useEffect(() => {
-    setLoading(true)
-
-    employeesService.getEmployees({ accountRef, token })
-      .then(employees => {
-        setEmployees(employees)
-        setLoading(false)
-      })
-  }, [setEmployees])
-
   const FilterChange = (e) => {
     const value = e.target.value
     const _filters = { ...filters }
@@ -56,7 +44,8 @@ export default function Employees () {
     return (
       <div className='flex justify-end'>
         <input
-          className='appearance-none w-72 block px-4 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-slate-500 focus:border-slate-500' value={globalFilterValue} onChange={FilterChange}
+          className='appearance-none w-72 block px-4 py-2 border border-slate-300 rounded-md shadow-sm placeholder-slate-400 focus:outline-none focus:ring-slate-500 focus:border-slate-500'
+          value={globalFilterValue} onChange={FilterChange}
           placeholder='Buscar por nombre o horas'
         />
       </div>
@@ -83,9 +72,9 @@ export default function Employees () {
                   responsiveLayout='scroll'
                   paginator showGridlines
                 >
-                  <Column field='name' header='Nombre' filter />
+                  <Column field='name' header='Nombre' />
                   <Column field='phone' header='Telefono' />
-                  <Column field='weekHours' header='Horas semanales' filter />
+                  <Column field='weekHours' header='Horas semanales' />
                   <Column header='Editar' body={RowEdit} />
                 </DataTable>
                 )}

@@ -65,12 +65,13 @@ signingsRouter.post('/', authorization, async (req, res, next) => {
       action
         ? (action.signings.push(savedSigning._id) && action.save())
         : new Action({
-          startDate: new Date(),
-          endDate: new Date(),
+          startDate: new Date().setHours(0, 0, 0, 0),
+          endDate: new Date().setHours(0, 0, 0, 0),
           employees: [employeeId],
           location: locationId,
           signings: [savedSigning._id],
-          notProgrammed: true
+          notProgrammed: true,
+          recurrance: 'DAILY'
         }).save()
       location && location.signings.push(savedSigning._id) && location.save()
 
