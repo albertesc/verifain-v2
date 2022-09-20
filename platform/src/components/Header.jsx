@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import useAuth from '../hooks/useAuth'
 
 const navigation = [
   { name: 'Actions', href: '/' },
@@ -9,6 +10,14 @@ const navigation = [
 ]
 
 export default function Header () {
+  const navigate = useNavigate()
+  const { logout } = useAuth()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
   return (
     <div className='min-h-full'>
       <nav className='bg-white border-b border-gray-200'>
@@ -24,6 +33,8 @@ export default function Header () {
                 {navigation.map(({ name, href }) => (
                   <Link key={name} to={href} className='border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2'> {name} </Link>
                 ))}
+
+                <button onClick={handleLogout}>Logout</button>
               </div>
             </div>
 

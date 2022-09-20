@@ -17,16 +17,6 @@ export default function Register () {
   const usernameField = watch('username')
   const emailField = watch('email')
 
-  const onSubmit = account => {
-    accountsService.createAccount(account)
-    navigate('/login')
-  }
-
-  useEffect(() => {
-    const user = JSON.parse(window.localStorage.getItem('loggedAppUser'))
-    user && navigate('/employees')
-  }, [])
-
   useEffect(() => {
     const fetchUsers = async () => {
       const accounts = await accountsService.getAccounts()
@@ -37,6 +27,11 @@ export default function Register () {
     }
     (usernameField || emailField) && fetchUsers()
   }, [usernameField, emailField])
+
+  const onSubmit = account => {
+    accountsService.createAccount(account)
+    navigate('/login')
+  }
 
   return (
     <div className='container max-w-2xl mx-auto'>

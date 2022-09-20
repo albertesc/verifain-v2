@@ -1,33 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import FormControl from '../components/FormControl'
-import loginService from '../services/login'
+import useAuth from '../hooks/useAuth'
 
 export default function Login () {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const navigate = useNavigate()
+  const { login } = useAuth()
 
-  useEffect(() => {
-    const user = JSON.parse(window.localStorage.getItem('loggedAppUser'))
-    user && navigate('/employees')
-  }, [])
-
-  const handleLogin = async e => {
+  const handleLogin = e => {
     e.preventDefault()
-
-    try {
-      const user = await loginService.login({ email, password })
-      window.localStorage.setItem('loggedAppUser', JSON.stringify(user))
-      navigate('/employees')
-    } catch (err) {
-      setError('Usuario o password incorrectos')
-      setTimeout(() => {
-        setError(null)
-      }, 3000)
-    }
+    login({ email, password })
+      .then(() => navigate('/'))
+      .catch(() => {
+        setError('Usuario o password incorrectos')
+        setTimeout(() => {
+          setError(null)
+        }, 2000)
+      })
   }
 
   return (
@@ -37,13 +30,13 @@ export default function Login () {
       <form onSubmit={handleLogin}>
         <FormControl
           name='email' label='Email' type='text' value={email}
-          placeholder='Escribe tu Email' onChange={({ target }) => setEmail(target.value)}
+          placeholder='Escribe tu Email' autoComplete='userName' onChange={({ target }) => setEmail(target.value)}
         />
         <FormControl
           name='password' label='Password' type='password' value={password}
-          placeholder='Escribe tu password' onChange={({ target }) => setPassword(target.value)}
+          placeholder='Escribe tu password' autoComplete='current-password' onChange={({ target }) => setPassword(target.value)}
         />
-        <div className='text-red-500'>{error}</div>
+        <div className='text-red-500 mb-3'>{error}</div>
         <Button type='submit'>Entrar</Button>
       </form>
     </div>
