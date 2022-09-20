@@ -46,6 +46,14 @@ const resolveTenant = async (req, res, next) => {
 }
 
 const resolveAdmin = (req, res, next) => {
+  const token = req.headers.authorization
+
+  if (!token || token !== process.env.ADMIN_TOKEN) {
+    return res
+      .status(500)
+      .json({ error: 'Please provide correct token to connect' })
+  }
+
   nameSpace.run(() => {
     const adminDbConnection = getAdminConnection()
     nameSpace.set('connection', adminDbConnection)
