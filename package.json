@@ -11,7 +11,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "build": "SKIP_PREFLIGHT_CHECK=true npm run build --workspace=platform",
+    "build": "npm run build --workspace=platform",
     "start": "npm run start --workspace=backend",
     "dev:api": "npm run build && npm run dev --workspace=backend",
     "dev:platform": "npm run dev --workspace=platform",
