@@ -8,11 +8,11 @@ const getAccounts = async () => {
   return response.data
 }
 
-const createAccount = async ({ username, email, password, companyName }) => {
+const createAccount = async ({ accountRef, email, password, companyName }) => {
   const newAccount = {
     accountName: companyName,
     companyName,
-    accountRef: `${username}-${getRandomToken()}`,
+    accountRef: `${accountRef}-${getRandomToken()}`,
     email,
     password
   }

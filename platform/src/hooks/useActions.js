@@ -1,22 +1,20 @@
 import { useEffect, useState } from 'react'
 import actionsService from '../services/actions'
-import getLocalAccount from '../utils/getLocalAccount'
 import useLoading from './useLoading'
 
 export default function useActions (filterDate) {
-  const { accountRef, token } = getLocalAccount()
   const [loading, startLoading, stopLoading] = useLoading()
-  const [actions, setActions] = useState([])
+  const [actionsByDate, setActionsByDate] = useState([])
 
   useEffect(() => {
     startLoading()
 
-    actionsService.getActionsByDate({ accountRef, token }, new Date(filterDate))
+    actionsService.getActionsByDate(new Date(filterDate))
       .then(actions => {
-        setActions(actions)
+        setActionsByDate(actions)
         stopLoading()
       })
-  }, [setActions, filterDate])
+  }, [setActionsByDate, filterDate])
 
-  return [actions, loading]
+  return { actionsByDate, loading }
 }

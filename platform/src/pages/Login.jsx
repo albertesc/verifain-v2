@@ -1,25 +1,32 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
-import FormControl from '../components/FormControl'
+import FormInput from '../components/FormInput'
+import FormPassword from '../components/FormPassword'
 import useAuth from '../hooks/useAuth'
+import loginSchema from '../schemas/loginSchema'
 
 export default function Login () {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
-  const navigate = useNavigate()
   const { login } = useAuth()
+  const navigate = useNavigate()
+  const [errorMessage, setErrorMessage] = useState(null)
 
-  const handleLogin = e => {
-    e.preventDefault()
-    login({ email, password })
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(loginSchema) })
+
+  const onSubmit = credentials => {
+    login(credentials)
       .then(() => navigate('/'))
       .catch(() => {
-        setError('Usuario o password incorrectos')
+        setErrorMessage('Credenciales incorrectas')
         setTimeout(() => {
-          setError(null)
-        }, 2000)
+          setErrorMessage(null)
+        }, 3000)
       })
   }
 
@@ -27,17 +34,19 @@ export default function Login () {
     <div className='container max-w-2xl mx-auto'>
       <h2 className='text-xl mt-12 mb-10'>Verifain Platform Login</h2>
 
-      <form onSubmit={handleLogin}>
-        <FormControl
-          name='email' label='Email' type='text' value={email}
-          placeholder='Escribe tu Email' autoComplete='userName' onChange={({ target }) => setEmail(target.value)}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormInput
+          control={control} name='email' label='Email'
+          placeholder='Escribe tu correo electrónico' error={errors.email?.message}
         />
-        <FormControl
-          name='password' label='Password' type='password' value={password}
-          placeholder='Escribe tu password' autoComplete='current-password' onChange={({ target }) => setPassword(target.value)}
+
+        <FormPassword
+          control={control} name='password' label='Contraseña' feedback={false}
+          placeholder='Escribe tu contraseña' error={errors.password?.message}
         />
-        <div className='text-red-500 mb-3'>{error}</div>
-        <Button type='submit'>Entrar</Button>
+
+        {errorMessage && <p className='text-red-500'>{errorMessage}</p>}
+        <Button className='mt-8' type='submit'>Entrar</Button>
       </form>
     </div>
   )

@@ -62,7 +62,7 @@ const actionSchema = new Schema({
     enum: validRecurranceDays,
     default: null
   }],
-  notProgrammed: {
+  notScheduled: {
     type: Boolean,
     default: false
   },
@@ -78,10 +78,6 @@ const actionSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Location',
     default: null
-  },
-  active: {
-    type: Boolean,
-    default: true
   },
   alarm: {
     type: Boolean,

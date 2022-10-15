@@ -52,7 +52,6 @@ actionsRouter.post('/', authorization, async (req, res, next) => {
     recurrance,
     recurranceDays,
     employees,
-    active,
     alarm,
     locationId
   } = req.body
@@ -66,9 +65,9 @@ actionsRouter.post('/', authorization, async (req, res, next) => {
     duration,
     recurrance,
     recurranceDays,
+    notScheduled: false,
     employees,
     location: location._id,
-    active,
     alarm
   }).save()
     .then(savedAction => {
@@ -90,7 +89,6 @@ actionsRouter.put('/:id', authorization, async (req, res, next) => {
     recurrance,
     recurranceDays,
     employees,
-    active,
     alarm,
     closed
   } = req.body
@@ -104,7 +102,6 @@ actionsRouter.put('/:id', authorization, async (req, res, next) => {
       recurrance,
       recurranceDays,
       employees,
-      active,
       alarm,
       closed
     }

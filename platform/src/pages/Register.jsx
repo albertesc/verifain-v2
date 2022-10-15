@@ -3,18 +3,21 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
-import FormControl from '../components/FormControl'
-import registerSchema from '../schemas/registerFormSchema'
+import FormInput from '../components/FormInput'
+import registerSchema from '../schemas/registerSchema'
 import accountsService from '../services/accounts'
 
 export default function Register () {
   const navigate = useNavigate()
   const [errorUsername, setErrorUsername] = useState(null)
-  const [ErrorEmail, setErrorEmail] = useState(null)
-  const { register, handleSubmit, watch, formState: { errors } } = useForm({
-    resolver: yupResolver(registerSchema)
-  })
-  const usernameField = watch('username')
+  const [errorEmail, setErrorEmail] = useState(null)
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors }
+  } = useForm({ resolver: yupResolver(registerSchema) })
+  const usernameField = watch('accountRef')
   const emailField = watch('email')
 
   useEffect(() => {
@@ -30,7 +33,7 @@ export default function Register () {
 
   const onSubmit = account => {
     accountsService.createAccount(account)
-    navigate('/login')
+    navigate('/')
   }
 
   return (
@@ -38,33 +41,29 @@ export default function Register () {
       <h1 className='text-xl my-10'>Formulario de registro</h1>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <FormControl
-          name='companyName' label='Nombre empresa *' type='text'
-          placeholder='Escribe tu nombre empresa' error={errors.companyName} register={register}
+        <FormInput
+          control={control} name='companyName' label='Nombre de empresa'
+          placeholder='Introduce el nombre de la empresa' error={errors.companyName?.message}
         />
 
-        <FormControl
-          name='username' label='Nombre de usuario (debe ser único) *' type='text'
-          placeholder='Escribe un nombre de usuario' error={errors.username} register={register}
-        >
-          {errorUsername && <span className='text-red-500'>El nombre de usuario ya existe</span>}
-        </FormControl>
-
-        <FormControl
-          name='email' label='Correo electrónico *' type='text'
-          placeholder='Escribe tu correo electrónico' error={errors.email} register={register}
-        >
-          {ErrorEmail && <span className='text-red-500'>El correo electrónico ya existe</span>}
-        </FormControl>
-
-        <FormControl
-          name='password' label='Contraseña *' type='password'
-          placeholder='Escriba una contraseña segura' error={errors.password} register={register}
+        <FormInput
+          control={control} name='accountRef' label='Nombre de usuario (debe ser único) *'
+          placeholder='Introduce el nombre de usuario' error={errors.accountRef?.message || (errorUsername ? 'El nombre de usuario ya existe' : null)}
         />
 
-        <FormControl
-          name='repeatPassword' label='Repetir contraseña *' type='password'
-          placeholder='Repita la contraseña' error={errors.repeatPassword} register={register}
+        <FormInput
+          control={control} name='email' label='Email (debe ser único) *'
+          placeholder='Escribe tu correo electrónico' error={errors.email?.message || (errorEmail ? 'El email ya existe' : null)}
+        />
+
+        <FormInput
+          control={control} name='password' label='Contraseña *'
+          placeholder='Escriba una contraseña segura' error={errors.password?.message}
+        />
+
+        <FormInput
+          control={control} name='repeatPassword' label='Repetir contraseña *'
+          placeholder='Repita la contraseña' error={errors.repeatPassword?.message}
         />
 
         <Button type='submit'>Registrame</Button>

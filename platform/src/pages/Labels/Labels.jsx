@@ -2,23 +2,14 @@ import { Column } from 'primereact/column'
 import { DataTable } from 'primereact/datatable'
 import Layout from '../../components/Layout'
 import PageHeader from '../../components/PageHeader'
-import RowEdit from '../../components/RowEdit'
-import useLocations from '../../hooks/useLocations'
+import useLabels from '../../hooks/useLabels'
 
-export default function Locations () {
-  const [locations, loading] = useLocations()
-
-  const rowAddress = (rowData) => {
-    return `${rowData.address}, ${rowData.city} (${rowData.province}), ${rowData.country}`
-  }
-
-  const rowLabel = (rowData) => {
-    return rowData.label ? rowData.label.reference : 'Sin etiqueta'
-  }
+export default function Labels () {
+  const [labels, loading] = useLabels()
 
   return (
     <Layout>
-      <PageHeader title='Locales' />
+      <PageHeader title='Etiquetas' />
 
       <main>
         <div className='sm:px-6 lg:px-8'>
@@ -29,18 +20,14 @@ export default function Locations () {
                 )
               : (
                 <DataTable
-                  value={locations}
+                  value={labels}
                   emptyMessage='No hay empleados con esos filtros'
                   rows={10}
                   size='small'
                   responsiveLayout='scroll'
                   paginator showGridlines
                 >
-                  <Column field='client.name' header='Cliente' />
-                  <Column field='name' header='Nombre local' />
-                  <Column field={rowAddress} header='Dirección' />
-                  <Column field={rowLabel} header='Etiqueta' />
-                  <Column field={RowEdit} header='Acciones' />
+                  <Column field='reference' header='Referencia' />
                 </DataTable>
                 )}
           </div>

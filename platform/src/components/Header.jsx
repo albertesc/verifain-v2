@@ -2,10 +2,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
 const navigation = [
-  { name: 'Actions', href: '/' },
+  { name: 'Agenda', href: '/' },
+  { name: 'Acciones', href: '/actions' },
   { name: 'Empleados', href: '/employees' },
   { name: 'Clientes', href: '/clients' },
-  { name: 'Informes', href: '/reports' },
+  { name: 'Locales', href: '/locations' },
   { name: 'Etiquetas QR', href: '/labels' }
 ]
 
@@ -34,7 +35,7 @@ export default function Header () {
                   <Link key={name} to={href} className='border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2'> {name} </Link>
                 ))}
 
-                <button onClick={handleLogout}>Logout</button>
+                <button onClick={handleLogout}>Salir</button>
               </div>
             </div>
 

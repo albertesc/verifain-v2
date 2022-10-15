@@ -70,7 +70,7 @@ signingsRouter.post('/', authorization, async (req, res, next) => {
           employees: [employeeId],
           location: locationId,
           signings: [savedSigning._id],
-          notProgrammed: true,
+          notScheduled: true,
           recurrance: 'DAILY'
         }).save()
       location && location.signings.push(savedSigning._id) && location.save()

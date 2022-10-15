@@ -5,6 +5,7 @@ const getClientModel = require('../services/getClientModel')
 const getActionModel = require('../services/getActionModel')
 const getSigningModel = require('../services/getSigningModel')
 const { getConnection } = require('../middleware/connectionResolver')
+const getLabelModel = require('../services/getLabelModel')
 
 locationsRouter.get('/', async (_, res) => {
   const dbConnection = await getConnection()
@@ -12,11 +13,13 @@ locationsRouter.get('/', async (_, res) => {
   await getClientModel(dbConnection)
   await getActionModel(dbConnection)
   await getSigningModel(dbConnection)
+  await getLabelModel(dbConnection)
 
   Location.find({})
     .populate('client', 'name')
     .populate('signings', 'signingIn signingOut')
     .populate('actions', 'startDate endDate hour duration')
+    .populate('label', 'reference')
     .then(locations => res.status(200).json(locations))
 })
 

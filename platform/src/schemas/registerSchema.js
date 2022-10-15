@@ -4,7 +4,7 @@ const formSchema = yup.object({
   companyName: yup.string()
     .required('El nombre de la empresa es obligatorio'),
 
-  username: yup.string()
+  accountRef: yup.string()
     .required('El nombre de usuario es obligatorio'),
 
   email: yup.string()
